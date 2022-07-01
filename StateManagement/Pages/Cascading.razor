@@ -1,0 +1,11 @@
+@page "/cascading"
+
+<CascadingValue Name="CascadingData" Value="@_someData">
+
+    <Parent></Parent>
+
+</CascadingValue>
+
+@code {
+    private DateTime _someData = DateTime.Now;
+}

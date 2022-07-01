@@ -1,0 +1,11 @@
+@if (Data!= null)
+{
+    <MudText>This shows some data</MudText>
+    <MudText>Data: @Data</MudText>
+}
+
+@code{
+
+    [CascadingParameter(Name = "CascadingData")]
+    private DateTime? Data { get; set; }
+}
