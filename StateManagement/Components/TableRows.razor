@@ -1,0 +1,12 @@
+@if (Data != null)
+{
+    foreach(var entry in Data)
+    {
+        <TableRow Data=entry />
+    }
+}
+
+@code{    
+    [Parameter]
+    public Pages.Parameter.WeatherForecast[]? Data { get; set; }
+}

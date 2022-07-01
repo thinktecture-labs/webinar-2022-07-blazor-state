@@ -1,0 +1,14 @@
+@if(Data != null)
+{
+<tr>
+    <TableCell Data="Data.Date"></TableCell>
+    <TableCell Data="Data.TemperatureC"></TableCell>
+    <TableCell Data="Data.TemperatureF"></TableCell>
+    <TableCell Data="Data.Summary"></TableCell>
+</tr>
+}
+
+@code{    
+    [Parameter]
+    public Pages.Parameter.WeatherForecast? Data { get; set; }
+}

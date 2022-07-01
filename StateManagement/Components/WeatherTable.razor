@@ -1,0 +1,14 @@
+<table>
+    <thead>
+        <th>Date</th>
+        <th>Temp. (C)</th>
+        <th>Temp. (F)</th>
+        <th>Summary</th>
+    </thead>    
+    <TableBody Data="Data"/>
+</table>
+
+@code{    
+    [Parameter]
+    public Pages.Parameter.WeatherForecast[]? Data { get; set; }
+}
