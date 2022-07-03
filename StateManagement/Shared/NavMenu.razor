@@ -1,7 +1,29 @@
-﻿<MudNavMenu>
+﻿@using StateManagement.Services
+@implements IDisposable
+
+<MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
     <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
     <MudNavLink Href="fetchdata" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Fetch data</MudNavLink>
     <MudNavLink Href="parameter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Parameter</MudNavLink>
     <MudNavLink Href="cascading" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Cascading</MudNavLink>
+    <MudNavLink Href="service" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Service (@ServiceCount)</MudNavLink>
 </MudNavMenu>
+
+@code {
+    [Inject]
+    private StateService? StateService { get; set; }
+
+    private int ServiceCount => StateService?.ForecastAmount ?? 0;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        StateService!.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        StateService!.OnChange -= StateHasChanged;
+    }
+}
