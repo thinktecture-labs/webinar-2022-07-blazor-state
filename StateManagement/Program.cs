@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using StateManagement;
 using MudBlazor.Services;
 using StateManagement.Services;
+using Fluxor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -12,5 +13,11 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddMudServices();
 
 builder.Services.AddScoped<StateService>();
+
+builder.Services.AddFluxor(o =>
+{
+    o.ScanAssemblies(typeof(Program).Assembly);
+    o.UseReduxDevTools();
+});
 
 await builder.Build().RunAsync();

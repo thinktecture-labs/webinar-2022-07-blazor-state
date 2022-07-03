@@ -1,4 +1,7 @@
 ﻿@using StateManagement.Services
+@using StateManagement.State
+
+@inherits FluxorComponent
 @implements IDisposable
 
 <MudNavMenu>
@@ -8,11 +11,15 @@
     <MudNavLink Href="parameter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Parameter</MudNavLink>
     <MudNavLink Href="cascading" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Cascading</MudNavLink>
     <MudNavLink Href="service" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Service (@ServiceCount)</MudNavLink>
+    <MudNavLink Href="store" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Store (@(CounterState?.Value.Count ?? 0))</MudNavLink>
 </MudNavMenu>
 
 @code {
     [Inject]
     private StateService? StateService { get; set; }
+
+    [Inject]
+    private IState<CounterState>? CounterState { get; set; }
 
     private int ServiceCount => StateService?.ForecastAmount ?? 0;
 
@@ -22,8 +29,13 @@
         StateService!.OnChange += StateHasChanged;
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        StateService!.OnChange -= StateHasChanged;
+        if (disposing)
+        {
+            StateService!.OnChange -= StateHasChanged;
+        }
+
+        base.Dispose(disposing);
     }
 }
