@@ -1,0 +1,79 @@
+@using System.Web
+@implements IDisposable
+
+<MudText Typo="Typo.h4">We're displaying data set: @DataId</MudText>
+ 
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6" ActivePanelIndex="@selectedTab" ActivePanelIndexChanged="OnSelectionChanged">
+    <MudTabPanel Text="Tab One">
+        <MudText>Content One</MudText>
+    </MudTabPanel>
+    <MudTabPanel Text="Tab Two">
+        <MudText>Content Two</MudText>
+    </MudTabPanel>
+    <MudTabPanel Text="Tab Three">
+        <MudText>Content Three</MudText>
+    </MudTabPanel>
+</MudTabs>
+
+<MudText Typo="Typo.h4">Debug: @selectedTab</MudText>
+
+@code{
+    private const string QueryParamName = "tab";
+
+    [Parameter]
+    public Guid DataId { get; set; }
+
+    [Inject]
+    private NavigationManager _navigationManager { get; set; } = null!;
+
+    private int selectedTab = 0;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        // get initial value from query string (because [Parameter, SupplyParameterFromQuery(Name = "XX")] does not work in components)
+        SetTabFromUri(_navigationManager.Uri);
+
+        // subscribe to navigation events
+        _navigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void SetTabFromUri(string uri)
+    {
+        // get query from uri string
+        var query = HttpUtility.ParseQueryString(new Uri(uri).Query);
+        var queryParameter = query[QueryParamName];
+
+        // parse value and if we have a change...
+        if (int.TryParse(queryParameter, out var newTab) && newTab != selectedTab)
+        {
+            // set new state and force a re-render
+            selectedTab = newTab;
+            StateHasChanged();
+        }
+    }
+
+    private void OnSelectionChanged(int newIndex)
+    {
+        // jump out if we have nothing to do
+        if (newIndex == selectedTab)
+            return;
+
+        // persist index change in URI (to be able to be copied / deeplinked)
+        var newUri = _navigationManager.GetUriWithQueryParameter(QueryParamName, newIndex);
+        _navigationManager.NavigateTo(newUri);
+    }
+
+    // use real method to make it easier to unsubscribe the event
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs args)
+    {
+        SetTabFromUri(args.Location);
+    }
+
+    public void Dispose()
+    {
+        // prevent memory leak and unsubscribe the event handler
+        _navigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

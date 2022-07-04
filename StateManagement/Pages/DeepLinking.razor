@@ -1,0 +1,13 @@
+
+@page "/deeplinking/{datasetid:guid}"
+
+<PageTitle>Deep Linking</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Deep Linking</MudText>
+
+<DeepLinkableComponent DataId="@DataSetId" />
+
+@code {
+    [Parameter]
+    public Guid DataSetId { get; set; }
+}
